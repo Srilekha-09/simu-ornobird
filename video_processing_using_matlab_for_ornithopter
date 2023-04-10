@@ -1,0 +1,63 @@
+% Load the video file
+video = VideoReader('Servo direct drive Unit2 5th time ： First video in 2018.mp4');
+% Set up a figure to display the processed frames
+figure;
+set(gcf, 'Position', get(0,'Screensize')); % Maximize the figure window
+
+% Set up a figure to display the raw frames
+figure;
+set(gcf, 'Position', get(0,'Screensize')); % Maximize the figure window
+
+% Loop through each frame of the video
+while hasFrame(video)
+    % Read the next frame of the video
+    frame = readFrame(video);
+
+    % Convert the frame to grayscale
+    frame_gray = rgb2gray(frame);
+
+    % Threshold the frame to create a binary image
+    threshold_value = 100;
+    frame_binary = frame_gray > threshold_value;
+
+    % Find the centroid of the ornithopter in the frame
+    stats = regionprops(frame_binary, 'Centroid');
+    centroid = cat(1, stats.Centroid);
+
+    % Find the major axis length and minor axis length of the ornithopter in the frame
+    stats = regionprops(frame_binary, 'MajorAxisLength', 'MinorAxisLength');
+    major_axis_length = stats.MajorAxisLength;
+    minor_axis_length = stats.MinorAxisLength;
+
+    % Compute the aspect ratio of the ornithopter in the frame
+    aspect_ratio = major_axis_length / minor_axis_length;
+
+    % Compute the orientation of the ornithopter in the frame
+    angle = atan2d(centroid(2)-size(frame_binary,1)/2, centroid(1)-size(frame_binary,2)/2);
+
+    % Display the processed frame
+    figure(1);
+    subplot(2,2,1);
+    imshow(frame);
+    title('Raw Frame');
+
+    subplot(2,2,2);
+    imshow(frame_binary);
+    title('Binary Frame');
+
+    subplot(2,2,3);
+    bar([major_axis_length, minor_axis_length, aspect_ratio]);
+    xticklabels({'Major Axis Length', 'Minor Axis Length', 'Aspect Ratio'});
+    title('Ornithopter Size');
+
+    subplot(2,2,4);
+    imshow(frame_binary);
+    hold on;
+    plot(centroid(1),centroid(2),'r*');
+    hold off;
+    title('Ornithopter Centroid');
+
+    % Display the raw frame
+    figure(2);
+    imshow(frame);
+end
