@@ -1,3 +1,4 @@
+//to process the flapping video of the ornithopter using matlab along with its parametres
 % Load the video file
 video = VideoReader('Servo direct drive Unit2 5th time ： First video in 2018.mp4');
 % Set up a figure to display the processed frames
