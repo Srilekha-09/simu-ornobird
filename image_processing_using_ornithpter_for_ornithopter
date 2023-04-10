@@ -1,0 +1,75 @@
+% Load the ornithopter image
+ornithopter_image = imread('ornithopter.jpg');
+
+% Convert the image to grayscale
+ornithopter_gray = rgb2gray(ornithopter_image);
+
+% Threshold the image to create a binary image
+threshold_value = 100;
+ornithopter_binary = ornithopter_gray > threshold_value;
+
+% Find the centroid of the ornithopter
+stats = regionprops(ornithopter_binary, 'Centroid');
+centroid = cat(1, stats.Centroid);
+
+% Find the major axis length and minor axis length of the ornithopter
+stats = regionprops(ornithopter_binary, 'MajorAxisLength', 'MinorAxisLength');
+major_axis_length = stats.MajorAxisLength;
+minor_axis_length = stats.MinorAxisLength;
+
+% Compute the aspect ratio of the ornithopter
+aspect_ratio = major_axis_length / minor_axis_length;
+
+% Compute the orientation of the ornithopter
+angle = atan2d(centroid(2)-size(ornithopter_binary,1)/2, centroid(1)-size(ornithopter_binary,2)/2);
+
+% Compute the area of the ornithopter
+area = bwarea(ornithopter_binary);
+
+% Compute the perimeter of the ornithopter
+perimeter = bwperim(ornithopter_binary);
+
+% Compute the solidity of the ornithopter
+solidity = regionprops(ornithopter_binary, 'Solidity');
+solidity = solidity.Solidity;
+
+% Plot the results
+figure(1)
+subplot(2,1,1);
+imshow(ornithopter_image);
+title('Ornithopter Image');
+
+subplot(2,1,2);
+imshow(ornithopter_binary);
+title('Binary Image');
+
+subplot(2,2,1);
+bar([major_axis_length, minor_axis_length, aspect_ratio]);
+xticklabels({'Major Axis Length', 'Minor Axis Length', 'Aspect Ratio'});
+title('Ornithopter Size');
+
+subplot(2,2,2);
+imshow(perimeter);
+title('Ornithopter Perimeter');
+figure(2)
+subplot(2,1,1);
+imshow(ornithopter_binary);
+hold on;
+plot(centroid(1),centroid(2),'r*');
+hold off;
+title('Ornithopter Centroid');
+
+subplot(2,1,2);
+imshow(ornithopter_binary);
+title('Ornithopter Area');
+xlabel(['Area: ', num2str(area)]);
+
+subplot(2,2,1);
+imshow(ornithopter_binary);
+title('Ornithopter Solidity');
+xlabel(['Solidity: ', num2str(solidity)]);
+
+subplot(2,2,2);
+imshow(ornithopter_binary);
+title('Ornithopter Orientation');
+xlabel(['Orientation: ', num2str(angle), ' degrees']);
