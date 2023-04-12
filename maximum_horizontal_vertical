@@ -1,0 +1,30 @@
+//to represent the maximum horizontal and vertical distance of a shape in given image
+
+% Load the image
+img = imread('b_e.jpg');  % Replace with your image file name
+
+% Convert the image to grayscale
+img_gray = rgb2gray(img);
+
+% Perform edge detection
+edges = edge(img_gray, 'Canny');
+
+% Find coordinates of the edges
+[y, x] = find(edges);
+
+% Plot the detected coordinates
+plot(x, y, 'r.');  % 'r.' for red dots
+
+% Set plot properties
+title('Detected Object Coordinates');
+xlabel('X Coordinate');
+ylabel('Y Coordinate');
+axis equal;  % Set equal scaling for x and y axis
+
+% Calculate maximum horizontal and vertical distances
+max_horizontal = max(x) - min(x);
+max_vertical = max(y) - min(y);
+
+% Display the calculated distances
+disp(['Maximum Horizontal Distance: ' num2str(max_horizontal)]);
+disp(['Maximum Vertical Distance: ' num2str(max_vertical)]);
