@@ -1,0 +1,35 @@
+//to get the major and minor axis length of an ellipse
+
+
+
+% Load the image
+img = imread('ellipse.jpg');  % Replace with your image file name
+
+% Specify the magnification factor
+magnification_factor = 1;  % Change this value to adjust the magnification factor
+
+% Magnify the image
+img_magnified = imresize(img, magnification_factor, 'bicubic');
+
+% Convert the magnified image to grayscale
+img_gray = rgb2gray(img_magnified);
+
+% Detect edges in the image
+edges = edge(img_gray, 'Canny');
+
+% Perform Hough transform to find ellipse parameters
+radii_range = [min(size(img_magnified)) max(size(img_magnified))];
+[centers, radii, metric] = imfindcircles(edges, radii_range, ...
+    'ObjectPolarity', 'bright', 'Sensitivity', 0.95);
+
+% Extract major and minor axis lengths from ellipse parameters
+a = radii(1);
+b = radii(2);
+
+% Calculate major and minor axis lengths
+major_axis_length = 2 * a;
+minor_axis_length = 2 * b;
+
+% Display major and minor axis lengths
+disp(['Calculated Major Axis Length: ' num2str(major_axis_length)]);
+disp(['Calculated Minor Axis Length: ' num2str(minor_axis_length)]);
