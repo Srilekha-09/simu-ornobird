@@ -1,0 +1,50 @@
+% Load the image
+img = imread('b_e.jpg');  % Replace with your image file name
+
+% Convert the image to grayscale
+img_gray = rgb2gray(img);
+
+% Perform edge detection
+edges = edge(img_gray, 'Canny');
+
+% Perform Hough transform to detect curves
+[H,theta,rho] = hough(edges);
+P = houghpeaks(H,5); % Adjust the number of peaks to detect
+
+% Extract the curve coordinates
+curve_coords = houghlines(edges,theta,rho,P,'FillGap',5,'MinLength',50); % Adjust FillGap and MinLength as needed
+
+% Extract the edge points along the curve
+x = [];
+y = [];
+for k = 1:length(curve_coords)
+    xy = [curve_coords(k).point1; curve_coords(k).point2];
+    x = [x; xy(:,1)];
+    y = [y; xy(:,2)];
+end
+
+% Calculate maximum horizontal and vertical distances
+max_horizontal = max(x) - min(x);
+max_vertical = max(y) - min(y);
+
+% Calculate the center of the input image
+image_center_x = size(img, 2) / 2;
+image_center_y = size(img, 1) / 2;
+
+% Plot the detected edge points and image center on the original image
+imshow(img);
+hold on;
+plot(x, y, 'r.');  % 'r.' for red dots
+plot(image_center_x, image_center_y, 'go', 'MarkerSize', 10);  % 'go' for green circle
+
+% Set plot properties
+title('Detected Edge Points and Image Center');
+xlabel('X Coordinate');
+ylabel('Y Coordinate');
+axis equal;  % Set equal scaling for x and y axis
+
+% Display the calculated distances and image center coordinates
+disp(['Maximum Horizontal Distance: ' num2str(max_horizontal)]);
+disp(['Maximum Vertical Distance: ' num2str(max_vertical)]);
+disp(['Image Center X Coordinate: ' num2str(image_center_x)]);
+disp(['Image Center Y Coordinate: ' num2str(image_center_y)]);
