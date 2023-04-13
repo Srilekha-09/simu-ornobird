@@ -1,0 +1,29 @@
+//to plot the center of the curve given in image
+
+% Load the curve image
+curve_img = imread('infinity_02.jpg');  % Replace with your image file name
+
+% Convert the image to grayscale
+curve_gray = rgb2gray(curve_img);
+
+% Perform edge detection on the grayscale image
+edges = edge(curve_gray, 'Canny');
+
+% Find coordinates of the edges
+[y, x] = find(edges);
+
+% Compute the center of the curve as the centroid of the edge coordinates
+curve_center_x = round(mean(x));
+curve_center_y = round(mean(y));
+
+% Plot the center of the curve on the image
+figure;
+imshow(curve_img);
+hold on;
+plot(curve_center_x, curve_center_y, 'r+', 'MarkerSize', 10);  % 'r+' for red plus sign, customize marker size as needed
+title('Center of the Curve');
+xlabel('X Coordinate');
+ylabel('Y Coordinate');
+hold off;
+% Display the center coordinates on the command window
+disp(['Center of the Curve: (' num2str(curve_center_x) ',' num2str(curve_center_y) ')']);
